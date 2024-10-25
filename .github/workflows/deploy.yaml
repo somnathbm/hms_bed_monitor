@@ -1,0 +1,14 @@
+name: go app deploy
+run-name: go app deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+    - name: Docker client check
+      run: docker version --client
