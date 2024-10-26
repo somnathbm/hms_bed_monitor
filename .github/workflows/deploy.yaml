@@ -10,5 +10,12 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
-    - name: Docker client check
-      run: docker version --client
+    - name: Setup go
+      uses: actions/setup-go@v5
+    - name: Install deps
+      id: deps
+      run: |
+        go get .
+        go build -o ./dist/hospi_bed_stats.sh > "$GITHUB_OUTPUT"
+    outputs:
+      script: ${{ steps.deps.outputs}}
