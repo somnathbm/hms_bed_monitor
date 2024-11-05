@@ -1,0 +1,6 @@
+{
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": "file:///Users/somnath/Desktop/Workspace/DevOps/project/hospi_bed_stats/.github/workflows/deploy.yaml",
+    "https://json.schemastore.org/kustomization.json": "file:///Users/somnath/Desktop/Workspace/DevOps/project/hospi_bed_stats/deployments/dev/deployment.yaml"
+  }
+}

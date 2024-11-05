@@ -10,7 +10,6 @@ RUN go build -o ./dist/bed_stats.sh
 
 FROM golang:alpine as RUN
 WORKDIR /app
-COPY --from=build ./dist/bed_stats.sh ./
+COPY --from=build /app/dist/bed_stats.sh ./
 EXPOSE 8080
-USER nonroot:nonroot
 CMD ["./bed_stats.sh"]

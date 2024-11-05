@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hospi-bed-stats-depl
+spec:
+  selector:
+    matchLabels:
+      app: hospi-bed-stats-pod
+  template:
+    metadata:
+      labels:
+        app: hospi-bed-stats-pod
+    spec:
+      containers:
+      - name: hospi-bed-stats-pod
+        image: somnathbm/hospi-bed-stats:v1
+        ports:
+        - containerPort: 8080
