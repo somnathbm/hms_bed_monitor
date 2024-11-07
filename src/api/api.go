@@ -45,11 +45,31 @@ func Api() {
 				"error": "config not found",
 			})
 		}
-		tableInfo := db.TableInfo{DBClient: dynamodb.NewFromConfig(config), TableName: "hospi-bed-stats"}
+		tableInfo := db.TableInfo{DBClient: dynamodb.NewFromConfig(config), TableName: "his_bed_stats"}
 		result, err := tableInfo.GetAllBeds()
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"message": "data not found!",
+			})
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"data": result,
+		})
+	})
+
+	server.GET("/beds/:id", func(c *gin.Context) {
+		config, error := config.LoadDefaultConfig(context.TODO())
+		if error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "config not found",
+			})
+		}
+		bedTypeId := c.Param("id")
+		tableInfo := db.TableInfo{DBClient: dynamodb.NewFromConfig(config), TableName: "his_bed_stats"}
+		result, err := tableInfo.GetBedDetails(bedTypeId)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "bed_type_id mismatch",
 			})
 		}
 		c.JSON(http.StatusOK, gin.H{

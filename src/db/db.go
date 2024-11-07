@@ -38,3 +38,21 @@ func (tableInfo TableInfo) GetAllBeds() ([]map[string]types.AttributeValue, erro
 	}
 	return result.Items, nil
 }
+
+// get bed availability of a particular type of category i.e. general/ICU/CCU
+func (tableInfo TableInfo) GetBedDetails(bedTypeId string) (map[string]types.AttributeValue, error) {
+	projectionList := "bed_type, t_capacity, occupied, available"
+	result, err := tableInfo.DBClient.GetItem(context.TODO(), &dynamodb.GetItemInput{
+		TableName: &tableInfo.TableName,
+		Key: map[string]types.AttributeValue{
+			"bed_type_id": &types.AttributeValueMemberS{Value: bedTypeId},
+		},
+		ProjectionExpression: &projectionList,
+	})
+
+	if err != nil {
+		log.Fatalln("fatal error", err)
+		return nil, err
+	}
+	return result.Item, nil
+}

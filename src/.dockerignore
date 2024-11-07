@@ -2,3 +2,4 @@
 .github
 .gitignore
 .dockerignore
+.DS_Store
