@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: hms_bed_monitor_svc
+  name: hms-bed-monitor-svc
 spec:
   selector:
-    app: hms_bed_monitor_pod
+    app: hms-bed-monitor-pod
   ports:
   - protocol: TCP
     port: 80
@@ -13,19 +13,19 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hms_bed_monitor_depl
+  name: hms-bed-monitor-depl
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: hms_bed_monitor_pod
+      app: hms-bed-monitor-pod
   template:
     metadata:
       labels:
-        app: hms_bed_monitor_pod
+        app: hms-bed-monitor-pod
     spec:
       containers:
-      - name: hms_bed_monitor_pod_container
-        image: somnathbm/hms_bed_monitor:v1
+      - name: hms-bed-monitor-pod-container
+        image: somnathbm/hms-bed-monitor-svc:v1
         ports:
         - containerPort: 8080

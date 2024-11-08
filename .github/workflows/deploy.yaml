@@ -20,14 +20,14 @@ jobs:
       with:
         push: true
         tags: somnathbm/hms-bed-monitor-svc:${{github.ref_name}}
-  deploy_to_eks:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
-        aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-        aws-region: ${{secrets.AWS_REGION}}
-    - name: Update kubeconfig using aws eks cli
-      run: aws eks update-kubeconfig --name test-hospi-beds-cluster --region ${{secrets.AWS_REGION}}
+  # deploy_to_eks:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Configure AWS credentials
+  #     uses: aws-actions/configure-aws-credentials@v4
+  #     with:
+  #       aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+  #       aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+  #       aws-region: ${{secrets.AWS_REGION}}
+  #   - name: Update kubeconfig using aws eks cli
+  #     run: aws eks update-kubeconfig --name test-hospi-beds-cluster --region ${{secrets.AWS_REGION}}
