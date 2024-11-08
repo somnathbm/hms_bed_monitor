@@ -18,6 +18,7 @@ jobs:
     - name: Build & publish the image
       uses: docker/build-push-action@v6
       with:
+        context: ./src
         push: true
         tags: somnathbm/hms-bed-monitor-svc:${{github.ref_name}}
   # deploy_to_eks:
