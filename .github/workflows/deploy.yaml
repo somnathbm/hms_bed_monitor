@@ -1,5 +1,5 @@
-name: go app deploy
-run-name: go app deploy
+name: HMS bed monitor service deploy
+run-name: HMS bed monitor service deploy
 on:
   push:
     tags:
@@ -19,7 +19,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         push: true
-        tags: somnathbm/hospi-bed-stats:${{github.ref_name}}
+        tags: somnathbm/hms-bed-monitor-svc:${{github.ref_name}}
   deploy_to_eks:
     runs-on: ubuntu-latest
     steps:
