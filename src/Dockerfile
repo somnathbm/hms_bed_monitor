@@ -7,7 +7,7 @@ COPY ./api ./api/
 COPY ./db ./db/
 RUN go build -o ./dist/hms-bed-monitor.sh
 
-FROM golang:alpine as RUN
+FROM golang:alpine AS run
 WORKDIR /app
 COPY --from=build --chmod=500 /app/dist/hms-bed-monitor.sh ./
 EXPOSE 8080

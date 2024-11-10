@@ -38,7 +38,7 @@ func Api() {
 		})
 	})
 
-	server.GET("/get-all-beds", func(c *gin.Context) {
+	server.GET("/beds", func(c *gin.Context) {
 		config, error := config.LoadDefaultConfig(context.TODO())
 		if error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
