@@ -41,7 +41,7 @@ func Api() {
 
 	server.GET("/beds", func(c *gin.Context) {
 		fmt.Print("Hello....")
-		config, error := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
+		config, error := config.LoadDefaultConfig(context.TODO())
 		fmt.Print("config\n")
 		fmt.Printf("%v", config)
 		if error != nil {
@@ -49,7 +49,7 @@ func Api() {
 				"error": "config not found",
 			})
 		}
-		tableInfo := db.TableInfo{DBClient: dynamodb.NewFromConfig(config), TableName: "hms_bed_stats"}
+		tableInfo := db.TableInfo{DBClient: dynamodb.NewFromConfig(config), TableName: "hms_bed_stat_svc"}
 		result, err := tableInfo.GetAllBeds()
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
@@ -69,7 +69,7 @@ func Api() {
 			})
 		}
 		bedTypeId := c.Param("id")
-		tableInfo := db.TableInfo{DBClient: dynamodb.NewFromConfig(config), TableName: "hms_bed_stats"}
+		tableInfo := db.TableInfo{DBClient: dynamodb.NewFromConfig(config), TableName: "hms_bed_stat_svc"}
 		result, err := tableInfo.GetBedDetails(bedTypeId)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
