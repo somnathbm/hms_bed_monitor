@@ -5,6 +5,7 @@
 # spec:
 #   selector:
 #     app: hms-bed-monitor-pod
+#   type: LoadBalancer
 #   ports:
 #   - protocol: TCP
 #     port: 80
@@ -14,7 +15,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hms-bed-monitor-depl
-  namespace: default
 spec:
   replicas: 1
   selector:
@@ -25,9 +25,9 @@ spec:
       labels:
         app: hms-bed-monitor-pod
     spec:
+      serviceAccountName: hms-monitor-sa
       containers:
-      - name: hms-bed-monitor-pod-container
-        image: somnathbm/hms-bed-monitor-svc:v0.0.3
+      - name: hms-bed-monitor
+        image: somnathbm/hms-bed-monitor-svc:v0.0.5
         ports:
         - containerPort: 8080
-      serviceAccountName: hms-monitor-sa
