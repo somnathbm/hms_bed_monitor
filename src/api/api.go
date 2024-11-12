@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
 	"hospi_bed_stats/db"
 	"net/http"
 
@@ -40,10 +39,7 @@ func Api() {
 	})
 
 	server.GET("/beds", func(c *gin.Context) {
-		fmt.Print("Hello....")
 		config, error := config.LoadDefaultConfig(context.TODO())
-		fmt.Print("config\n")
-		fmt.Printf("%v", config)
 		if error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "config not found",
