@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     app: hms-bed-monitor-pod
-  type: LoadBalancer
+  type: ClusterIP
   ports:
   - protocol: TCP
     port: 80
@@ -25,9 +25,9 @@ spec:
       labels:
         app: hms-bed-monitor-pod
     spec:
-      serviceAccountName: hms-monitor-sa
+      serviceAccountName: hms-pods-sa
       containers:
       - name: hms-bed-monitor
-        image: somnathbm/hms-bed-monitor-svc:v0.0.5
+        image: somnathbm/hms-bed-monitor-svc:v0.0.6
         ports:
         - containerPort: 8080
