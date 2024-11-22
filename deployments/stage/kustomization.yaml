@@ -1,0 +1,13 @@
+resources:
+- ../base
+
+namespace: hms-stage
+nameSuffix: -stage
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: hms-bed-monitor-depl
+    path: patch-service-account.yaml

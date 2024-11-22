@@ -2,3 +2,11 @@ resources:
 - ../base
 namespace: hms-dev
 nameSuffix: -dev
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: hms-bed-monitor-depl
+    path: patch-service-account.yaml
