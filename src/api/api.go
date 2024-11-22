@@ -13,28 +13,10 @@ import (
 
 func Api() {
 	server := gin.Default()
+
 	server.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "PONG!",
-		})
-	})
-
-	server.GET("/check-table", func(c *gin.Context) {
-		config, error := config.LoadDefaultConfig(context.TODO())
-		if error != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "config not found",
-			})
-		}
-		tableInfo := db.TableInfo{DBClient: dynamodb.NewFromConfig(config), TableName: "test-my-table"}
-		result, err := tableInfo.CheckTableExists(tableInfo.TableName)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{
-				"message": "table not found!",
-			})
-		}
-		c.JSON(http.StatusOK, gin.H{
-			"message": result.Table.TableName,
 		})
 	})
 
@@ -44,6 +26,7 @@ func Api() {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "config not found",
 			})
+			return
 		}
 		tableInfo := db.TableInfo{DBClient: dynamodb.NewFromConfig(config), TableName: "hms_bed_stat_svc"}
 		result, err := tableInfo.GetAllBeds()
@@ -51,6 +34,7 @@ func Api() {
 			c.JSON(http.StatusOK, gin.H{
 				"message": "data not found!",
 			})
+			return
 		}
 		c.JSON(http.StatusOK, gin.H{
 			"data": result,
@@ -63,6 +47,7 @@ func Api() {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "config not found",
 			})
+			return
 		}
 		bedTypeId := c.Param("id")
 		tableInfo := db.TableInfo{DBClient: dynamodb.NewFromConfig(config), TableName: "hms_bed_stat_svc"}
@@ -71,10 +56,12 @@ func Api() {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "bed_type_id mismatch",
 			})
+			return
 		}
 		c.JSON(http.StatusOK, gin.H{
 			"data": result,
 		})
 	})
-	server.Run()
+
+	server.Run(":8081")
 }
