@@ -14,9 +14,9 @@ import (
 func Api() {
 	server := gin.Default()
 
-	server.GET("/ping", func(c *gin.Context) {
+	server.GET("/healthy", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "PONG!",
+			"message": "OK!!",
 		})
 	})
 
@@ -63,5 +63,5 @@ func Api() {
 		})
 	})
 
-	server.Run(":8081")
+	server.Run()
 }
