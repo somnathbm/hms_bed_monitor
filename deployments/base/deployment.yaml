@@ -28,6 +28,6 @@ spec:
       serviceAccountName: hms-pods-sa
       containers:
       - name: hms-bed-monitor
-        image: somnathbm/hms-bed-monitor-svc:v0.0.6
+        image: somnathbm/hms-bed-monitor-svc:v0.0.7
         ports:
         - containerPort: 8080
