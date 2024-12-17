@@ -14,13 +14,13 @@ import (
 func Api() {
 	server := gin.Default()
 
-	server.GET("/healthy", func(c *gin.Context) {
+	server.GET("/bm/healthy", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "OK!!",
 		})
 	})
 
-	server.GET("/beds", func(c *gin.Context) {
+	server.GET("/bm/beds", func(c *gin.Context) {
 		config, error := config.LoadDefaultConfig(context.TODO())
 		if error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -41,7 +41,7 @@ func Api() {
 		})
 	})
 
-	server.GET("/beds/:id", func(c *gin.Context) {
+	server.GET("/bm/beds/:id", func(c *gin.Context) {
 		config, error := config.LoadDefaultConfig(context.TODO())
 		if error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
