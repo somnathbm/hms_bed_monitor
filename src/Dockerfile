@@ -5,6 +5,7 @@ RUN go mod download
 COPY main.go ./main.go
 COPY ./api ./api/
 COPY ./db ./db/
+COPY ./models ./models/
 RUN go build -o ./dist/hms-bed-monitor.sh
 
 FROM golang:alpine AS run
