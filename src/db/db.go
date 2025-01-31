@@ -3,56 +3,75 @@ package db
 import (
 	"context"
 	"errors"
-	"log"
+	"fmt"
+	"os"
+	"time"
 
-	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
-	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	// "github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	// "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
+
+	"hospi_bed_stats/models"
 )
 
-type TableInfo struct {
-	DBClient  *dynamodb.Client
-	TableName string
-}
+// Get mongo collection for 1 minute connection pool
+func get_db_collection() (*mongo.Collection, *mongo.Client) {
+	_, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
 
-// check table existance
-func (tableInfo TableInfo) CheckTableExists(tableName string) (*dynamodb.DescribeTableOutput, error) {
-	result, err := tableInfo.DBClient.DescribeTable(context.TODO(), &dynamodb.DescribeTableInput{TableName: &tableName})
-
+	client, err := mongo.Connect(options.Client().ApplyURI(os.Getenv("APP_DB_URI")))
 	if err != nil {
-		var notFoundEx *types.ResourceNotFoundException
-		if errors.As(err, &notFoundEx) {
-			log.Printf("Table %v does not exist.\n", tableName)
-			err = nil
-		}
+		panic(err)
 	}
-	return result, nil
+	collection := client.Database(os.Getenv("APP_DB_NAME")).Collection(os.Getenv("COLLECTION_NAME"))
+	return collection, client
 }
 
-// get all beds data
-func (tableInfo TableInfo) GetAllBeds() ([]map[string]types.AttributeValue, error) {
-	result, err := tableInfo.DBClient.Scan(context.TODO(), &dynamodb.ScanInput{TableName: &tableInfo.TableName})
+// Get all beds
+func GetAllBeds() ([]models.Beds, error) {
+	var results []models.Beds
+	var decodedResult []models.Beds
 
-	if err != nil {
-		log.Fatalln("fatal error", err)
+	collection, client := get_db_collection()
+	if collection == nil || client == nil {
+		// panic("unable to proceed operation with mongo")
+		return nil, errors.New("could not get db")
+	}
+
+	cursor, err := collection.Find(context.TODO(), bson.M{})
+	if err != nil && err == mongo.ErrNoDocuments {
+		// handle error
 		return nil, err
 	}
-	return result.Items, nil
+	if err = cursor.All(context.TODO(), &results); err != nil {
+		fmt.Println("ERROR Ocurred!!")
+		panic(err)
+	}
+	// Prints the results of the find operation as structs
+	for _, result := range results {
+		cursor.Decode(&result)
+		decodedResult = append(decodedResult, result)
+	}
+	client.Disconnect(context.Background())
+	return decodedResult, nil
 }
 
 // get bed availability of a particular type of category i.e. general/ICU/CCU
-func (tableInfo TableInfo) GetBedDetails(bedTypeId string) (map[string]types.AttributeValue, error) {
-	projectionList := "bed_type, t_capacity, occupied, available"
-	result, err := tableInfo.DBClient.GetItem(context.TODO(), &dynamodb.GetItemInput{
-		TableName: &tableInfo.TableName,
-		Key: map[string]types.AttributeValue{
-			"bed_type_id": &types.AttributeValueMemberS{Value: bedTypeId},
-		},
-		ProjectionExpression: &projectionList,
-	})
-
-	if err != nil {
-		log.Fatalln("fatal error", err)
+func GetBedDetails(bedTypeId string) (primitive.M, error) {
+	collection, client := get_db_collection()
+	if collection == nil || client == nil {
+		// panic("unable to proceed operation with mongo")
+		return nil, errors.New("could not get db")
+	}
+	var result bson.M
+	err := collection.FindOne(context.TODO(), bson.M{"bed_type_id": bedTypeId}, options.FindOne().SetProjection(bson.M{"_id": 0})).Decode(&result)
+	if err != nil && err == mongo.ErrNoDocuments {
+		// handle error
 		return nil, err
 	}
-	return result.Item, nil
+	client.Disconnect(context.Background())
+	return result, nil
 }
